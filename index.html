@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shouson Hill — John Zhai</title>
+    <style>
+        :root {
+            --bg: #fafaf8;
+            --text: #1a1a1a;
+            --text-light: #666;
+            --accent: #2c5282;
+            --accent-light: #ebf4ff;
+            --border: #e2e8f0;
+            --card-bg: #fff;
+            --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+            --shadow-hover: 0 4px 12px rgba(0,0,0,0.08);
+            --radius: 12px;
+            --max-width: 900px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Header */
+        header {
+            text-align: center;
+            padding: 80px 24px 60px;
+            background: linear-gradient(180deg, #fff 0%, #fafaf8 100%);
+            border-bottom: 1px solid var(--border);
+        }
+        header h1 {
+            font-size: 2.8rem;
+            font-weight: 700;
+            letter-spacing: -0.03em;
+            color: var(--text);
+            margin-bottom: 8px;
+        }
+        header .subtitle {
+            font-size: 1.05rem;
+            color: var(--text-light);
+            font-weight: 400;
+        }
+        header .location {
+            font-size: 0.9rem;
+            color: #999;
+            margin-top: 6px;
+        }
+
+        /* Navigation */
+        nav {
+            display: flex;
+            justify-content: center;
+            gap: 32px;
+            padding: 16px 24px;
+            background: #fff;
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+        nav a {
+            text-decoration: none;
+            color: var(--text-light);
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: color 0.2s;
+            padding: 4px 0;
+            border-bottom: 2px solid transparent;
+        }
+        nav a:hover, nav a.active {
+            color: var(--accent);
+            border-bottom-color: var(--accent);
+        }
+
+        /* Main */
+        main {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            padding: 40px 24px 80px;
+        }
+
+        section {
+            margin-bottom: 60px;
+        }
+        section h2 {
+            font-size: 1.6rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        section h2 .icon {
+            font-size: 1.3rem;
+        }
+
+        /* Intro */
+        .intro-text {
+            font-size: 1.05rem;
+            color: #444;
+            max-width: 650px;
+            line-height: 1.8;
+        }
+        .intro-text p { margin-bottom: 16px; }
+        .intro-text a {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .intro-text a:hover { text-decoration: underline; }
+
+        /* Books Grid */
+        .books-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 16px;
+        }
+        .book-card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 16px;
+            box-shadow: var(--shadow);
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid var(--border);
+            position: relative;
+            display: flex;
+            gap: 14px;
+            align-items: flex-start;
+        }
+        .book-card:hover {
+            box-shadow: var(--shadow-hover);
+            transform: translateY(-2px);
+            border-color: var(--accent);
+        }
+        .book-cover {
+            width: 56px;
+            height: 78px;
+            border-radius: 4px;
+            object-fit: cover;
+            flex-shrink: 0;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+        }
+        .book-info {
+            flex: 1;
+            min-width: 0;
+        }
+        .book-info h3 {
+            font-size: 0.92rem;
+            font-weight: 600;
+            line-height: 1.4;
+            margin-bottom: 4px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        .book-info .author {
+            font-size: 0.8rem;
+            color: var(--text-light);
+            margin-bottom: 6px;
+        }
+        .book-stats {
+            display: flex;
+            gap: 12px;
+            font-size: 0.75rem;
+            color: #888;
+        }
+        .book-stats span {
+            display: flex;
+            align-items: center;
+            gap: 3px;
+        }
+        .book-rank {
+            position: absolute;
+            top: -6px;
+            left: -6px;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: var(--accent);
+            color: #fff;
+            font-size: 0.65rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Book Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.4);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            backdrop-filter: blur(4px);
+        }
+        .modal-overlay.active { display: flex; }
+        .modal {
+            background: #fff;
+            border-radius: 16px;
+            max-width: 560px;
+            width: 100%;
+            max-height: 80vh;
+            overflow-y: auto;
+            padding: 32px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+            position: relative;
+        }
+        .modal-close {
+            position: absolute;
+            top: 16px;
+            right: 20px;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #999;
+            padding: 4px 8px;
+            border-radius: 6px;
+            transition: all 0.15s;
+        }
+        .modal-close:hover { color: #333; background: #f5f5f5; }
+        .modal .book-header {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        .modal .book-cover-lg {
+            width: 90px;
+            height: 126px;
+            border-radius: 6px;
+            object-fit: cover;
+            flex-shrink: 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .modal h3 { font-size: 1.2rem; margin-bottom: 4px; }
+        .modal .author { color: var(--text-light); font-size: 0.9rem; margin-bottom: 8px; }
+        .modal .book-meta {
+            display: flex;
+            gap: 16px;
+            font-size: 0.8rem;
+            color: #888;
+            margin-bottom: 12px;
+        }
+        .modal .book-meta span {
+            background: var(--accent-light);
+            color: var(--accent);
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-weight: 500;
+        }
+        .modal .weread-link {
+            display: inline-block;
+            margin-bottom: 16px;
+            font-size: 0.85rem;
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .modal .weread-link:hover { text-decoration: underline; }
+        .modal .intro {
+            font-size: 0.9rem;
+            color: #555;
+            line-height: 1.8;
+        }
+
+        /* YouTube */
+        .youtube-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 14px;
+        }
+        .yt-card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 18px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            text-decoration: none;
+            color: var(--text);
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+        .yt-card:hover {
+            box-shadow: var(--shadow-hover);
+            transform: translateY(-2px);
+            border-color: #e53e3e;
+        }
+        .yt-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: #e53e3e;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            color: #fff;
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+        .yt-info h4 {
+            font-size: 0.92rem;
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+        .yt-info .desc {
+            font-size: 0.78rem;
+            color: var(--text-light);
+            line-height: 1.4;
+        }
+
+        /* WeChat MP */
+        .mp-section .mp-card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 20px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            margin-bottom: 14px;
+            text-decoration: none;
+            color: var(--text);
+            display: block;
+            transition: all 0.2s;
+        }
+        .mp-section .mp-card:hover {
+            box-shadow: var(--shadow-hover);
+            transform: translateY(-1px);
+            border-color: #07c160;
+        }
+        .mp-card h4 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+        .mp-card .mp-meta {
+            font-size: 0.8rem;
+            color: var(--text-light);
+        }
+        .mp-qr {
+            text-align: center;
+            margin-top: 24px;
+            padding: 20px;
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+        }
+        .mp-qr .qr-placeholder {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 12px;
+            background: #f0f0f0;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            color: #999;
+        }
+        .mp-qr p { font-size: 0.85rem; color: var(--text-light); }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 40px 24px;
+            color: #aaa;
+            font-size: 0.8rem;
+            border-top: 1px solid var(--border);
+        }
+
+        /* Empty state */
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 640px) {
+            header h1 { font-size: 2rem; }
+            header { padding: 50px 20px 40px; }
+            nav { gap: 20px; }
+            .books-grid { grid-template-columns: 1fr; }
+            .youtube-list { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Shouson Hill</h1>
+    <p class="subtitle">Curiosity-driven · Builder at heart</p>
+</header>
+
+<nav>
+    <a href="#about">About</a>
+    <a href="#books">Bookshelf</a>
+    <a href="#youtube">YouTube</a>
+    <a href="#wechat">公众号</a>
+</nav>
+
+<main>
+    <!-- About -->
+    <section id="about">
+        <h2><span class="icon">👋</span> About</h2>
+        <div class="intro-text">
+            <p>
+                欢迎来到 Shouson Hill —— 我在互联网上的一角。我对市场如何运作、AI 如何重塑世界、
+                以及推动进步的思想充满好奇——从 David Deutsch 的认识论到 Taleb 的 skin-in-the-game 哲学。
+            </p>
+            <p>
+                我写了一个微信公众号叫 <strong>「真实世界的脉络」</strong>（The Fabric of Reality），
+                探讨投资、AI 以及塑造我们对世界理解的宏大思想。
+                这个页面是我阅读、观看和思考的精选集。
+            </p>
+        </div>
+    </section>
+
+    <!-- Books -->
+    <section id="books">
+        <h2><span class="icon">📚</span> Favorite Books</h2>
+        <p style="color: var(--text-light); font-size: 0.9rem; margin-bottom: 20px;">
+            Top 20 books with the most notes & highlights on 微信读书. Click any card for details.
+        </p>
+        <div class="books-grid" id="booksGrid">
+            <!-- Filled by JS -->
+        </div>
+    </section>
+
+    <!-- YouTube -->
+    <section id="youtube">
+        <h2><span class="icon">▶️</span> Favorite YouTube Channels</h2>
+        <div class="youtube-list">
+            <a href="https://www.youtube.com/@allin" target="_blank" rel="noopener" class="yt-card">
+                <div class="yt-icon">A</div>
+                <div class="yt-info">
+                    <h4>All-In Podcast</h4>
+                    <p class="desc">Chamath, Jason, Sacks & Friedberg on tech, markets, politics & poker</p>
+                </div>
+            </a>
+            <a href="https://www.youtube.com/@ycombinator" target="_blank" rel="noopener" class="yt-card">
+                <div class="yt-icon">M</div>
+                <div class="yt-info">
+                    <h4>Moonshots (Y Combinator)</h4>
+                    <p class="desc">Startup wisdom, founder stories & the future being built today</p>
+                </div>
+            </a>
+            <a href="https://www.youtube.com/@PrinciplesbyRayDalio" target="_blank" rel="noopener" class="yt-card">
+                <div class="yt-icon">R</div>
+                <div class="yt-info">
+                    <h4>Ray Dalio / Principles</h4>
+                    <p class="desc">How the economic machine works & principles for navigating life & markets</p>
+                </div>
+            </a>
+            <a href="https://www.youtube.com/results?search_query=jeffrey+gundlach+doubleline" target="_blank" rel="noopener" class="yt-card">
+                <div class="yt-icon">J</div>
+                <div class="yt-info">
+                    <h4>Jeffrey Gundlach</h4>
+                    <p class="desc">The Bond King — macro insights from DoubleLine Capital's CEO</p>
+                </div>
+            </a>
+            <a href="https://www.youtube.com/results?search_query=warren+buffett+berkshire+hathaway+annual+meeting" target="_blank" rel="noopener" class="yt-card">
+                <div class="yt-icon">W</div>
+                <div class="yt-info">
+                    <h4>Warren Buffett</h4>
+                    <p class="desc">Berkshire Hathaway annual meetings & timeless value investing wisdom</p>
+                </div>
+            </a>
+            <a href="https://www.youtube.com/results?search_query=charlie+munger+daily+journal+meeting" target="_blank" rel="noopener" class="yt-card">
+                <div class="yt-icon">C</div>
+                <div class="yt-info">
+                    <h4>Charlie Munger</h4>
+                    <p class="desc">Daily Journal meetings & the wit and wisdom of Buffett's partner</p>
+                </div>
+            </a>
+        </div>
+    </section>
+
+    <!-- WeChat 公众号 -->
+    <section id="wechat" class="mp-section">
+        <h2><span class="icon">✍️</span> 公众号 · 真实世界的脉络</h2>
+            <p style="color: var(--text-light); font-size: 0.9rem; margin-bottom: 20px;">
+                A WeChat blog exploring investing, AI, and the ideas shaping our world.
+                <a href="https://mp.weixin.qq.com/s?__biz=Mzk3NTYyNDAzOQ==" target="_blank" rel="noopener" style="color: var(--accent);">→ View on WeChat</a>
+            </p>
+
+        <!-- Top 3 articles -->
+        <div id="mpArticles">
+            <a href="https://mp.weixin.qq.com/s/4pvt36wVPoqljlIH8iheTQ" target="_blank" rel="noopener" class="mp-card">
+                <h4>从一颗豆子开始</h4>
+                <p class="mp-meta">A science dialogue tracing from legume nitrogen-fixation to quantum mechanics — revealing how life's ingenious designs are rooted in the fundamental laws of physics.</p>
+            </a>
+            <a href="https://mp.weixin.qq.com/s/NrgTaXI8AfL3Z0ETZWANSw" target="_blank" rel="noopener" class="mp-card">
+                <h4>罗马帝国衰亡史：货币篇</h4>
+                <p class="mp-meta">Drawing historical parallels between Rome's currency collapse and the modern US dollar — a warning from The Economist about trade deficits, fiscal discipline, and reserve currency hubris.</p>
+            </a>
+            <a href="https://mp.weixin.qq.com/s/5U6fitTcmQ7UfErSkCoURA" target="_blank" rel="noopener" class="mp-card">
+                <h4>马克・安德森：我完全不做自我内省</h4>
+                <p class="mp-meta">Marc Andreessen (a16z co-founder) on his philosophy of building, action over introspection, and why the best founders are relentlessly forward-looking.</p>
+            </a>
+        </div>
+
+        <div class="mp-qr">
+            <div class="qr-placeholder">📱<br>QR Code</div>
+            <p>Scan to follow <strong>「真实世界的脉络」</strong> on WeChat</p>
+        </div>
+    </section>
+</main>
+
+<footer>
+    <p>Shouson Hill · Built with curiosity</p>
+</footer>
+
+<!-- Book Detail Modal -->
+<div class="modal-overlay" id="bookModal">
+    <div class="modal" id="bookModalContent">
+        <button class="modal-close" onclick="closeModal()">&times;</button>
+        <div id="modalInner"></div>
+    </div>
+</div>
+
+<script>
+// Book data
+const books = [
+    {"bookId":"24020241","title":"佛陀传：全世界影响力最大的佛陀传记","author":"一行禅师","cover":"https://cdn.weread.qq.com/weread/cover/39/YueWen_24020241/t6_YueWen_24020241.jpg","totalNotes":562,"reviewCount":221,"noteCount":340,"progress":100,"intro":"享誉海内外的佛学大师一行禅师经典作品，他沉稳迷人地讲述了佛陀80岁的完整一生，佛法的起源与奥妙，就这样在您面前徐徐展开。无论你有没有佛学根基，阅读本书，都是一次充满喜乐和感动，受益匪浅的修行。自从1991年在美国初次出版以来，二十多年的时间，《佛陀传》已成为全世界佛学爱好者的入门书。一行禅师沉稳迷人地讲述了佛陀释迦牟尼从出生、成长、出家、修行、得道、弘法，直至灭寂的完整一生。娓娓道来的佛陀生平故事，融汇着佛法的精深奥妙；无论你有没有佛学根基，阅读《佛陀传》，都是一次充满喜乐和感动，受益匪浅的修行。"},
+    {"bookId":"25916160","title":"无穷的开始：世界进步的本源（第2版）","author":"戴维·多伊奇","cover":"https://cdn.weread.qq.com/weread/cover/84/YueWen_25916160/t6_YueWen_25916160.jpg","totalNotes":530,"reviewCount":194,"noteCount":336,"progress":99,"intro":"《无穷的开始：改变世界的解释》是一次大胆的、包罗万象的智力探险。戴维·多伊奇探索那些使我们理解现实世界怎样运转的重大问题。《真实世界的脉络》描述了我们当前知识中深刻的4条支线——进化、量子物理学、知识和运算，以及它们带来的世界观。《无穷的开始》将这种世界观应用于许多不同的话题和未解问题，涉及到自由意志、创造力与自然规律、人类的未来与起源、现实与表象、解释与无穷。多伊奇秉持坚定的理性和乐观态度，对人类选择、科学解释和文化进化的性质得出了惊人的新结论。"},
+    {"bookId":"CB_AL75DB5ElDRu6n06kx4jTFcz","title":"无穷的开始 世界进步的本源","author":"戴维·多伊奇","cover":"https://res.weread.qq.com/wrepub/CB_FbQFXIFZy4KO6eu6gZ7MP0iV_parsecover","totalNotes":507,"reviewCount":102,"noteCount":405,"progress":94,"intro":"《无穷的开始》是一次大胆的、包罗万象的智力探险。戴维·多伊奇探索那些使我们理解现实世界怎样运转的重大问题，涉及到自由意志、创造力与自然规律、人类的未来与起源、现实与表象、解释与无穷。他的核心结论是，\"解释\"在宇宙中有着基础性的地位；解释的范围和造成改变的能力是无穷无尽的。"},
+    {"bookId":"3300034744","title":"开放社会及其敌人（第二卷）","author":"波普尔","cover":"https://cdn.weread.qq.com/weread/cover/11/cpPlatform_1H4oZwGyRFJsSma4GTdQVy/t6_cpPlatform_1H4oZwGyRFJsSma4GTdQVy.jpg","totalNotes":357,"reviewCount":98,"noteCount":259,"progress":93,"intro":"《西方现代思想丛书：开放社会及其敌人》是一部政治哲学和历史哲学的批判性导言，也是对某些社会重建原则的审查。其目的和研究方法在《引言》中得到陈述。即使是回溯既往之处，书中的问题也是我们自己时代的问题；而我也竭尽所能简单地说明这些问题，希望能澄清我们全都关注的这些争议。"},
+    {"bookId":"847310","title":"大明王朝1566（全集）","author":"刘和平","cover":"https://wfqqreader-1252317822.image.myqcloud.com/cover/310/847310/t6_847310.jpg","totalNotes":350,"reviewCount":162,"noteCount":187,"progress":100,"intro":"豆瓣9.5分高评好剧《大明王朝1566》同名小说，台湾朝野必读，新加坡内阁政治参考书。此书为《雍正王朝》编剧、《北平无战事》作者刘和平成名之作。全书以扳倒大老虎严嵩为线索，讲述大明王朝一场盘根错节、惊心动魄的反腐大戏。揭开中国历史上最另类的皇帝嘉靖数十年不上朝的执政之谜；揭示中国历史上清官海瑞以\"智忠\"代\"愚忠\"的为官之道。"},
+    {"bookId":"3300143092","title":"思考，快与慢（第二版）","author":"丹尼尔·卡尼曼","cover":"https://cdn.weread.qq.com/weread/cover/33/cpplatform_wr55yrqcgu1th4myjwezqj/t6_cpplatform_wr55yrqcgu1th4myjwezqj1745822239.jpg","totalNotes":284,"reviewCount":105,"noteCount":179,"progress":93,"intro":"诺贝尔经济学奖得主丹尼尔·卡尼曼的经典作品，是卡尼曼一生研究工作清晰而富有启发性的总结。卡尼曼认为，有两种系统驱动着我们的思考和决策方式：系统1是依赖直觉、情感、记忆做出的快速判断；系统2则更慢、更深思熟虑，也更有逻辑。通过阐释这两个系统在大脑中的运作规律，卡尼曼揭示了快思考和直觉印象对人类思想和选择的普遍影响。"},
+    {"bookId":"840995","title":"万历十五年（精装版）","author":"黄仁宇","cover":"https://wfqqreader-1252317822.image.myqcloud.com/cover/995/840995/t6_840995.jpg","totalNotes":258,"reviewCount":117,"noteCount":141,"progress":87,"intro":"热播反腐剧《人民的名义》多次提到《万历十五年》，为什么这么多人研究这本书呢？此书是美籍华裔历史学家黄仁宇先生的成名之作，也是他的代表作之一，融会黄先生数十年人生经验与治学体会于一体，首次以\"大历史观\"分析明代社会之症结，观察现代中国之来路，发人深思。这是一部打开中国人视野的经典之作。"},
+    {"bookId":"3300034746","title":"开放社会及其敌人（第一卷）","author":"波普尔","cover":"https://cdn.weread.qq.com/weread/cover/55/cpPlatform_1cN8P97sK8WPDsnnS348JL/t6_cpPlatform_1cN8P97sK8WPDsnnS348JL.jpg","totalNotes":214,"reviewCount":86,"noteCount":128,"progress":100,"intro":"《西方现代思想丛书：开放社会及其敌人》是一部政治哲学和历史哲学的批判性导言，也是对某些社会重建原则的审查。其目的和研究方法在《引言》中得到陈述。即使是回溯既往之处，书中的问题也是我们自己时代的问题；而我也竭尽所能简单地说明这些问题，希望能澄清我们全都关注的这些争议。"},
+    {"bookId":"3300168226","title":"荣格自传：回忆、梦与思考","author":"卡尔·古斯塔夫·荣格","cover":"https://cdn.weread.qq.com/weread/cover/50/cpplatform_wozw7etinqwng8ftaufsej/t6_cpplatform_wozw7etinqwng8ftaufsej1760077095.jpg","totalNotes":213,"reviewCount":88,"noteCount":124,"progress":67,"intro":"卡尔·古斯塔夫·荣格是一位心理学天才，也是唯一一位崇尚东方传统文化，并将中国传统文化融入自己的心理学说的大师。他是精神分析学的代表人物，创立了荣格人格分析心理学理论，提出情结、集体潜意识、心理类型、人格原型、内倾、外倾、自性化等一系列非常具有影响力的理论和概念，其理论和思想至今对世人都有着深远影响。"},
+    {"bookId":"23665518","title":"自私的基因（40周年增订版）","author":"理查德·道金斯","cover":"https://cdn.weread.qq.com/weread/cover/60/YueWen_23665518/t6_YueWen_23665518.jpg","totalNotes":185,"reviewCount":69,"noteCount":116,"progress":79,"intro":"《自私的基因》以充满想象力的叙述回答了这些重要命题。道金斯在本书中提出大胆创见：我们生来是自私的，任何生物，包括我们自己，都只是求生的机器。道金斯在书中将进化论从基因层面升华至文化层面，创造了\"觅母\"（meme，即文化基因）这一新型的复制因子名词，并提出：在这个世界上，只有我们，我们人类，能够反抗自私的复制因子的暴政。"},
+    {"bookId":"3300070507","title":"真实世界的脉络：平行宇宙及其寓意：第2版","author":"戴维·多伊奇","cover":"https://cdn.weread.qq.com/weread/cover/11/cpplatform_qfxch7izk48cnuulg7sfpw/t6_cpplatform_qfxch7izk48cnuulg7sfpw1694002707.jpg","totalNotes":180,"reviewCount":38,"noteCount":141,"progress":94,"intro":"宇宙、生命、时间……这些基本而又复杂的问题，如果用目前深刻的理论—量子物理学、计算机科学、进化论和认识论—去解释，那将会编织成一幅什么样的图景呢？作者戴维·多伊奇在这里提出了一种思维模式，顺着这一思维模式，我们的新世界观将日趋明朗。科学的目的是从问题出发寻求解释还是从观察出发寻求预言？"},
+    {"bookId":"3300070504","title":"盲眼钟表匠","author":"理查德·道金斯","cover":"https://cdn.weread.qq.com/weread/cover/60/cpplatform_da8pwjjwygbif5fxtglbte/t6_cpplatform_da8pwjjwygbif5fxtglbte1693999227.jpg","totalNotes":171,"reviewCount":66,"noteCount":105,"progress":98,"intro":"我们从哪里来？为什么是今天这副模样？人人都自以为懂的进化论究竟是怎么回事？《自私的基因》之后，道金斯风靡世界、奉为标准的进化论入门首选经典。达尔文《物种起源》以来最具影响力的进化论作品！早在18世纪，神学家培里便以\"钟表匠\"隐喻生物的演变——就像手表这样精密复杂的东西绝不可能无中生有、突然出现一样。"},
+    {"bookId":"536972","title":"失控","author":"凯文·凯利","cover":"https://cdn.weread.qq.com/weread/cover/20/YueWen_536972/t6_YueWen_536972.jpg","totalNotes":163,"reviewCount":66,"noteCount":97,"progress":98,"intro":"凯文·凯利（KK），世界著名科技杂志《连线》创始主编，\"网络文化\"的发言人和观察者。1994年，其预言未来科技发展的传奇著作《失控》横空出世，十几年后，文中所指相继出现。在互联网创业大潮席卷各个领域的今天，KK依旧冷静地游走在最新科技产品与人迹罕至的原始部落中，思考科技该如何发展以及人类将怎样依靠科技。"},
+    {"bookId":"40055543","title":"置身事内：中国政府与经济发展","author":"兰小欢","cover":"https://cdn.weread.qq.com/weread/cover/52/YueWen_40055543/t6_YueWen_40055543.jpg","totalNotes":162,"reviewCount":59,"noteCount":103,"progress":91,"intro":"本书是复旦大学经济学院教授兰小欢多年教学与研究内容的凝练，将经济学原理与中国经济发展的实践有机融合，以地方政府投融资为主线，深入浅出地论述了中国经济的发展，广泛采纳各领域学者全新研究成果。全书分上下两篇。上篇解释微观机制，下篇解释这些微观行为与宏观现象的联系。"},
+    {"bookId":"CB_5253V73WH70w6sg6tBDMqEgn","title":"Skin in the Game","author":"Nassim Nicholas Taleb","cover":"https://res.weread.qq.com/wrepub/CB_2hU9h29hZAyf6iP6gW2bAGgk_parsecover","totalNotes":158,"reviewCount":37,"noteCount":121,"progress":90,"intro":"Nassim Nicholas Taleb's groundbreaking exploration of hidden asymmetries in daily life. From the bestselling author of The Black Swan, a bold new work that challenges conventional thinking about risk, reward, and responsibility. If you have nothing to lose, you become a predator; if you have skin in the game, you're forced to be accountable."},
+    {"bookId":"23523072","title":"中国历代政治得失","author":"钱穆","cover":"https://cdn.weread.qq.com/weread/cover/54/yuewen_23523072/t6_yuewen_235230721689681600.jpg","totalNotes":150,"reviewCount":58,"noteCount":92,"progress":100,"intro":"《中国历代政治得失》是钱穆先生的专题演讲合集，分别就中国汉、唐、宋、明、清五代种种政治制度作了提要钩玄的概观与比照，叙述因革演变，指陈利害得失。"},
+    {"bookId":"843247","title":"乾隆皇帝（全集）","author":"二月河","cover":"https://cdn.weread.qq.com/weread/cover/2/yuewen_843247/t6_yuewen_8432471715149889.jpg","totalNotes":145,"reviewCount":70,"noteCount":75,"progress":100,"intro":"清帝小说鼻祖二月河重磅力作。时年二十五岁的乾隆继位。他胸怀大志，一心开创大清盛世。他坚持推行\"以宽为政\"的施政方略，革除前朝苛政。重视直臣能吏，简拔新秀，整顿吏治，对贪官污吏严加惩处。他励精图治，蠲免赋税，使民休养生息，并不断微服私访，体察民情。"},
+    {"bookId":"853426","title":"稀缺：我们是如何陷入贫穷与忙碌的","author":"塞德希尔·穆来纳森","cover":"https://cdn.weread.qq.com/weread/cover/46/YueWen_853426/t6_YueWen_853426.jpg","totalNotes":134,"reviewCount":41,"noteCount":93,"progress":99,"intro":"哈佛大学终身教授塞得希尔·穆来纳森和普林斯顿大学心理学教授埃尔德·沙菲尔强强联合之作，继《思考，快与慢》之后的又一部行为经济学重磅新作，《金融时报》2013年必读十佳商业图书。他们发现了一个存在于世人中间的惊人真相：穷困之人会永远缺钱，而忙碌之人会永远缺时间。"},
+    {"bookId":"44026191","title":"纳瓦尔宝典","author":"埃里克·乔根森","cover":"https://cdn.weread.qq.com/weread/cover/89/YueWen_44026191/t6_YueWen_44026191.jpg","totalNotes":124,"reviewCount":24,"noteCount":100,"progress":91,"intro":"致富不是靠运气，幸福也不是从天而降的。积累财富和幸福生活是我们可以学习的技能。这本书收集整理了硅谷投资人纳瓦尔在过去十年里通过推特、播客和采访等方式分享的人生智慧，向读者分享了纳瓦尔关于财富积累和幸福人生的原则与方法。"},
+    {"bookId":"3300030955","title":"命运","author":"蔡崇达","cover":"https://cdn.weread.qq.com/weread/cover/46/cpPlatform_tEnsXcTvcuE69ZuvviMknD/t6_cpPlatform_tEnsXcTvcuE69ZuvviMknD.jpg","totalNotes":122,"reviewCount":45,"noteCount":77,"progress":100,"intro":"《命运》是蔡崇达继《皮囊》之后，时隔八年潜心创作的长篇小说。《皮囊》里的那句\"皮囊是拿来用的，不是拿来伺候的。\"正是出自《命运》的主人公，阿太之口。《命运》以九十九岁的她一生的故事为主线，串联起福建闽南沿海小镇几代人的人生故事、命运选择与时代浮沉。"}
+];
+
+// Render books grid
+function renderBooks() {
+    const grid = document.getElementById('booksGrid');
+    grid.innerHTML = books.map((b, i) => `
+        <div class="book-card" onclick="openBook(${i})">
+            <div class="book-rank">${i + 1}</div>
+            <img class="book-cover" src="${b.cover}" alt="${b.title}" loading="lazy"
+                 onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2256%22 height=%2278%22><rect fill=%22%23e2e8f0%22 width=%2256%22 height=%2278%22 rx=%224%22/><text x=%2228%22 y=%2244%22 text-anchor=%22middle%22 fill=%22%23999%22 font-size=%2210%22>No Cover</text></svg>'">
+            <div class="book-info">
+                <h3>${b.title}</h3>
+                <p class="author">${b.author}</p>
+                <div class="book-stats">
+                    <span>📝 ${b.totalNotes} notes</span>
+                    <span>📖 ${b.progress}%</span>
+                </div>
+            </div>
+        </div>
+    `).join('');
+}
+
+// Open book modal
+function openBook(index) {
+    const b = books[index];
+    const modal = document.getElementById('bookModal');
+    const inner = document.getElementById('modalInner');
+
+    const wereadUrl = b.bookId.startsWith('CB_')
+        ? `https://weread.qq.com/web/reader/${b.bookId}`
+        : `weread://reading?bId=${b.bookId}`;
+
+    inner.innerHTML = `
+        <div class="book-header">
+            <img class="book-cover-lg" src="${b.cover}" alt="${b.title}"
+                 onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2290%22 height=%22126%22><rect fill=%22%23e2e8f0%22 width=%2290%22 height=%22126%22 rx=%226%22/></svg>'">
+            <div>
+                <h3>${b.title}</h3>
+                <p class="author">${b.author}</p>
+                <div class="book-meta">
+                    <span>📝 ${b.totalNotes} notes</span>
+                    <span>💬 ${b.reviewCount} reviews</span>
+                    <span>📖 ${b.progress}% read</span>
+                </div>
+                <a href="${wereadUrl}" target="_blank" rel="noopener" class="weread-link">
+                    📖 Open in 微信读书 →
+                </a>
+            </div>
+        </div>
+        <div class="intro">
+            <p>${b.intro || 'No introduction available for this book.'}</p>
+        </div>
+    `;
+
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+    document.getElementById('bookModal').classList.remove('active');
+    document.body.style.overflow = '';
+}
+
+// Close modal on overlay click
+document.getElementById('bookModal').addEventListener('click', function(e) {
+    if (e.target === this) closeModal();
+});
+
+// Close modal on Escape
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') closeModal();
+});
+
+// Smooth scroll for nav links
+document.querySelectorAll('nav a').forEach(link => {
+    link.addEventListener('click', function(e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+        // Update active state
+        document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
+        this.classList.add('active');
+    });
+});
+
+// Highlight active nav on scroll
+window.addEventListener('scroll', () => {
+    const sections = document.querySelectorAll('section');
+    const navLinks = document.querySelectorAll('nav a');
+    let current = '';
+    sections.forEach(s => {
+        if (window.scrollY >= s.offsetTop - 100) {
+            current = s.getAttribute('id');
+        }
+    });
+    navLinks.forEach(a => {
+        a.classList.remove('active');
+        if (a.getAttribute('href') === '#' + current) a.classList.add('active');
+    });
+});
+
+// Init
+renderBooks();
+</script>
+</body>
+</html>
