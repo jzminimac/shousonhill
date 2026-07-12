@@ -266,16 +266,7 @@
             border-radius: 12px;
             font-weight: 500;
         }
-        .modal .weread-link {
-            display: inline-block;
-            margin-bottom: 16px;
-            font-size: 0.85rem;
-            color: var(--accent);
-            text-decoration: none;
-            font-weight: 500;
-        }
-        .modal .weread-link:hover { text-decoration: underline; }
-        .modal .intro {
+        .modal .book-meta span {
             font-size: 0.9rem;
             color: #555;
             line-height: 1.8;
@@ -589,10 +580,6 @@ function openBook(index) {
     const modal = document.getElementById('bookModal');
     const inner = document.getElementById('modalInner');
 
-    const wereadUrl = b.bookId.startsWith('CB_')
-        ? `https://weread.qq.com/web/reader/${b.bookId}`
-        : `https://weread.qq.com/web/search?q=${encodeURIComponent(b.title)}`;
-
     inner.innerHTML = `
         <div class="book-header">
             <img class="book-cover-lg" src="${b.cover}" alt="${b.title}"
@@ -605,9 +592,6 @@ function openBook(index) {
                     <span>💬 ${b.reviewCount} reviews</span>
                     <span>📖 ${b.progress}% read</span>
                 </div>
-                <a href="${wereadUrl}" target="_blank" rel="noopener" class="weread-link">
-                    📖 Search on 微信读书 →
-                </a>
             </div>
         </div>
         <div class="intro">
