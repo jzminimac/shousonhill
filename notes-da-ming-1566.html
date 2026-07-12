@@ -2431,6 +2431,11 @@ function closeComments() {
 }
 
 function loadDisqus(noteNumber) {
+    // Must set disqus_config BEFORE loading the script
+    window.disqus_config = function () {
+        this.page.identifier = 'da-ming-1566-' + noteNumber;
+        this.page.url = window.location.origin + window.location.pathname + '?note=' + noteNumber;
+    };
     var d = document, s = d.createElement('script');
     s.src = 'https://shousonhill.disqus.com/embed.js';
     s.setAttribute('data-timestamp', +new Date());
