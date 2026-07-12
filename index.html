@@ -266,6 +266,24 @@
             border-radius: 12px;
             font-weight: 500;
         }
+        .modal .notes-link {
+            display: inline-block;
+            margin-top: 10px;
+            font-size: 0.85rem;
+            color: #e53e3e;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 4px 12px;
+            background: #fff5f5;
+            border-radius: 8px;
+            border: 1px solid #fed7d7;
+            transition: all 0.15s;
+        }
+        .modal .notes-link:hover {
+            background: #e53e3e;
+            color: #fff;
+            border-color: #e53e3e;
+        }
         .modal .book-meta span {
             font-size: 0.9rem;
             color: #555;
@@ -592,6 +610,7 @@ function openBook(index) {
                     <span>💬 ${b.reviewCount} reviews</span>
                     <span>📖 ${b.progress}% read</span>
                 </div>
+                ${b.bookId === '847310' ? '<a href="notes-da-ming-1566.html" target="_blank" rel="noopener" class="notes-link">📖 查看 183 条读书笔记 →</a>' : ''}
             </div>
         </div>
         <div class="intro">
