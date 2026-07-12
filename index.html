@@ -591,7 +591,7 @@ function openBook(index) {
 
     const wereadUrl = b.bookId.startsWith('CB_')
         ? `https://weread.qq.com/web/reader/${b.bookId}`
-        : `https://weread.qq.com/web/reader/${b.bookId}`;
+        : `https://weread.qq.com/web/search?q=${encodeURIComponent(b.title)}`;
 
     inner.innerHTML = `
         <div class="book-header">
@@ -606,7 +606,7 @@ function openBook(index) {
                     <span>📖 ${b.progress}% read</span>
                 </div>
                 <a href="${wereadUrl}" target="_blank" rel="noopener" class="weread-link">
-                    📖 Open in 微信读书 →
+                    📖 Search on 微信读书 →
                 </a>
             </div>
         </div>
