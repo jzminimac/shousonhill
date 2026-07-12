@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>大明王朝1566 · 读书笔记 · Shouson Hill</title>
+<title>Da Ming 1566 · Reading Notes · Shouson Hill</title>
 <style>
 :root {
     --bg: #fafaf8;
@@ -2416,6 +2416,7 @@ function showComments(noteNumber) {
                 config: function () {
                     this.page.identifier = 'da-ming-1566-' + noteNumber;
                     this.page.url = window.location.origin + window.location.pathname + '?note=' + noteNumber;
+                    this.page.title = 'Notes da ming 1566 - ' + noteNumber;
                 }
             });
         } else {
@@ -2435,6 +2436,7 @@ function loadDisqus(noteNumber) {
     window.disqus_config = function () {
         this.page.identifier = 'da-ming-1566-' + noteNumber;
         this.page.url = window.location.origin + window.location.pathname + '?note=' + noteNumber;
+        this.page.title = 'Notes da ming 1566 - ' + noteNumber;
     };
     var d = document, s = d.createElement('script');
     s.src = 'https://shousonhill.disqus.com/embed.js';
